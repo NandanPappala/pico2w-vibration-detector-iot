@@ -30,34 +30,37 @@ else:
         print(hex(x))
         print(x)
 
-
+#code to read the acceleration data x,y,z
 def calc_accel():
-    
-    sample = 50
 
-    # read from 0x3B data slot
-    data = sensor_bus.readfrom_mem(sensor_address, 0x3B, 6)
+    try:            
+        sample = 50
     
-    # shift 8 slots to fit 2 bytes
-    x = data[0] * 256 + data[1]
-    y = data[2] * 256 + data[3]
-    z = data[4] * 256 + data[5]
+        # read from 0x3B data slot
+        data = sensor_bus.readfrom_mem(sensor_address, 0x3B, 6)
+        
+        # shift 8 slots to fit 2 bytes
+        x = data[0] * 256 + data[1]
+        y = data[2] * 256 + data[3]
+        z = data[4] * 256 + data[5]
+        
+        # take in consideration neg values
+        if x > 32767:
+            x -= 65536
+        if y > 32767:
+            y -= 65536
+        if z > 32767:
+            z -= 65536
+        
+        # calc G - force
+        x = x/16384
+        y = y/16384
+        z = z/16384
     
-    # take in consideration neg values
-    if x > 32767:
-        x -= 65536
-    if y > 32767:
-        y -= 65536
-    if z > 32767:
-        z -= 65536
-    
-    # calc G - force
-    x = x/16384
-    y = y/16384
-    z = z/16384
-
-    return x, y, z
-
+        return x, y, z
+    except:
+        return 0, 0, 0
+#code to read the vibrations using RMS 
 def calc_vibr():
     sum_squares = 0
     samples = 50
@@ -79,7 +82,8 @@ def calc_vibr():
     rms = math.sqrt(sum_squares)
     
     return rms
-        
+
+#display RMS
 def display_rms():
     while True:
         vibration_rms = calc_vibr()
