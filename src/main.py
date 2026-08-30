@@ -6,8 +6,21 @@ from machine import I2C, Pin
 
 # This is the vibration sensor address to read from
 sensor_address = 0x68
+#(physical pin 16)
+RGB_RED_PIN = 12
+#(physical pin 17)
+RGB_GREEN_PIN = 13
+#(physical pin 19)
+RGB_BLUE_PIN = 14
+
 
 sensor_bus = machine.I2C(0, sda=machine.Pin(20), scl=machine.Pin(21), freq=400000)
+
+# pins 12, 13, 14
+red_led = machine.Pin(RGB_RED_PIN, machine.Pin.OUT)
+green_led = machine.Pin(RGB_GREEN_PIN, machine.Pin.OUT)
+blue_led = machine.Pin(RGB_BLUE_PIN , machine.Pin.OUT)
+
 
 sensor_bus.writeto_mem(sensor_address, 0x6B, b'\x00')
 
@@ -83,11 +96,54 @@ def calc_vibr():
     
     return rms
 
-#display RMS
-def display_rms():
-    while True:
-        vibration_rms = calc_vibr()
-        print(f"vibration_rms: {vibration_rms:.4f}")
-        time.sleep(5)
 
-display_rms()
+# function to return status based on vibrations
+def status(vibration):
+    if vibration < 0.07 or vibration == 0.07:
+        return "Normal"
+    elif vibration < 0.1 and vibration > 0.07:
+        return "Warning"
+    elif vibration > 0.1 and vibration < 0.25:
+        return "Anomaly"
+    else:
+        return "Critical"
+        
+# function to easily set color values for LED
+def set_color(red_color, green_color, blue_color):
+    red_led.value(red_color)
+    green_led.value(green_color)
+    blue_led.value(blue_color)
+
+# function to turn off buzzer and set led to red
+def turn_off():
+    red_led.value(0)
+    green_led.value(0)
+    blue_led.value(0)
+
+
+# function which controls led color based on status
+def light_protocol(status):
+    turn_off()
+    # green
+    if status == "Normal":
+        set_color( 0, 1, 0)
+    # yellow
+    elif status == "Warning":
+        set_color(0, 1, 1)
+    # purple
+    elif status == "Anomaly":
+        set_color( 1, 0, 1)
+    # red
+    else:
+        set_color(1, 0, 0)
+       
+def main():
+   
+    while True:
+        rms = calc_vibr()                
+        current_status = status(rms)
+        light_protocol(current_status)
+                       
+        time.sleep(1)
+   
+main()
