@@ -13,6 +13,9 @@ RGB_GREEN_PIN = 13
 #(physical pin 19)
 RGB_BLUE_PIN = 14
 
+# Buzzer
+BUZZER_PIN = 15
+
 
 sensor_bus = machine.I2C(0, sda=machine.Pin(20), scl=machine.Pin(21), freq=400000)
 
@@ -21,6 +24,11 @@ red_led = machine.Pin(RGB_RED_PIN, machine.Pin.OUT)
 green_led = machine.Pin(RGB_GREEN_PIN, machine.Pin.OUT)
 blue_led = machine.Pin(RGB_BLUE_PIN , machine.Pin.OUT)
 
+
+# Passive
+buzzer = machine.PWM(machine.Pin(BUZZER_PIN))
+# turn off buzzer
+buzzer.duty_u16(0)
 
 sensor_bus.writeto_mem(sensor_address, 0x6B, b'\x00')
 
@@ -97,6 +105,41 @@ def calc_vibr():
     return rms
 
 
+# function to turn off buzzer and set led to red
+def turn_off():
+    # turn off buzzer
+    buzzer.duty_u16(0)    
+    # Stop PWM to release the pin
+    buzzer.deinit()
+    red_led.value(0)
+    green_led.value(0)
+    blue_led.value(0)
+   
+# function to provide functionality for buzzer
+def play_tone(frequency, duration):
+    # Check if it's a rest
+    if frequency == 0:
+        utime.sleep_ms(duration)
+    else:
+        # Play the tone at 50% volume
+        buzzer.freq(frequency)
+        buzzer.duty_u16(32768)
+        utime.sleep_ms(duration)
+       
+        # Turn off the sound
+        buzzer.duty_u16(0)
+       
+# Function to play a simple tone using buzzer
+def simple_tone():
+    # A4 note for 500 ms
+    play_tone(800, 500)  
+    utime.sleep_ms(200)
+    # B4 note for 500 ms
+    play_tone(1000, 500)  
+    utime.sleep_ms(200)
+    # C5 note for 500ms
+    play_tone(1000, 500)
+    
 # function to return status based on vibrations
 def status(vibration):
     if vibration < 0.07 or vibration == 0.07:
@@ -114,13 +157,6 @@ def set_color(red_color, green_color, blue_color):
     green_led.value(green_color)
     blue_led.value(blue_color)
 
-# function to turn off buzzer and set led to red
-def turn_off():
-    red_led.value(0)
-    green_led.value(0)
-    blue_led.value(0)
-
-
 # function which controls led color based on status
 def light_protocol(status):
     turn_off()
@@ -136,14 +172,42 @@ def light_protocol(status):
     # red
     else:
         set_color(1, 0, 0)
-       
+
+
+# function for buzzer sound for status warning
+def warning_buzzer():
+    simple_tone()
+   
+# function for buzzer sound for status Anomaly
+def anomaly_buzzer():
+    for i in range(1):
+        simple_tone()
+        time.sleep(0.1)
+# function for buzzer sound for status critical
+def critical_buzzer():
+    for i in range(2):
+        simple_tone()
+        time.sleep(0.1)
+
+def buzzer_protocol(current_status):
+   
+    if current_status == "Normal":
+       pass    
+    elif current_status == "Warning":
+       warning_buzzer()
+    elif current_status == "Anomaly":
+       anomaly_buzzer()
+    else:
+       critical_buzzer()
+        
 def main():
    
     while True:
         rms = calc_vibr()                
         current_status = status(rms)
         light_protocol(current_status)
-                       
+        buzzer_protocol(current_status)  
+        
         time.sleep(1)
    
 main()
