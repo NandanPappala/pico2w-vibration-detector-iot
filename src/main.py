@@ -4,7 +4,7 @@ import utime
 import maths
 import network
 from machine import I2C, Pin, PWM
-
+from umqtt.simple import MQTTClient
 
 
 
@@ -28,6 +28,25 @@ while wlan.isconnected() != True:
 print("WiFi Connected!", wlan.ifconfig())
 time.sleep(2)
 
+# Launch MQTT client
+client = MQTTClient(
+    client_id = "test_vibration_monitor",
+    server = MQTT_BROKER,
+    user = AIO_USERNAME,
+    password= AIO_KEY,
+    port=1883
+)
+
+# Connect to Adafruit IO
+client.connect()
+print("Connected to Adafruit IO")
+
+# sned to adafruit feed (display by username, record feed)
+def send_to_aio(feed, value):
+    topic = "{}/feeds/{}".format(AIO_USERNAME,feed)
+    # Client publish data
+    client.publish( topic, str(value))
+    
 # This is the vibration sensor address to read from
 sensor_address = 0x68
 #(physical pin 16)
@@ -231,7 +250,8 @@ def main():
         current_status = status(rms)
         light_protocol(current_status)
         buzzer_protocol(current_status)  
-        
+        print(f"Vibration: {rms:.3f} g")
+        send_to_aio("Vibration", rms)
         time.sleep(1)
    
 main()
