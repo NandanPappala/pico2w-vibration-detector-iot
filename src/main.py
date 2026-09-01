@@ -2,7 +2,31 @@ import machine
 import time
 import utime
 import maths
-from machine import I2C, Pin
+import network
+from machine import I2C, Pin, PWM
+
+
+
+
+# define WiFi connect info
+WIFI_SSID = "YOUR_WIFI_SSID"
+WIFI_PASSWORD = "YOUR_WIFI_PWD"
+MQTT_BROKER = "io.adafruit.com"
+AIO_USERNAME = "YOUR_AIO_USERNAME"
+AIO_KEY = "YOUR_AIO_KEY"
+
+# connect to WiFi
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(WIFI_SSID, WIFI_PASSWORD)
+# Indicate not connected to WiFi
+while wlan.isconnected() != True:
+    time.sleep(2)
+    print(".")
+
+#notify WiFi connecte
+print("WiFi Connected!", wlan.ifconfig())
+time.sleep(2)
 
 # This is the vibration sensor address to read from
 sensor_address = 0x68
