@@ -7,7 +7,6 @@ from machine import I2C, Pin, PWM
 from umqtt.simple import MQTTClient
 
 
-
 # define WiFi connect info
 WIFI_SSID = "YOUR_WIFI_SSID"
 WIFI_PASSWORD = "YOUR_WIFI_PWD"
@@ -24,7 +23,7 @@ while wlan.isconnected() != True:
     time.sleep(2)
     print(".")
 
-#notify WiFi connecte
+#notify WiFi connectesf
 print("WiFi Connected!", wlan.ifconfig())
 time.sleep(2)
 
@@ -242,16 +241,84 @@ def buzzer_protocol(current_status):
        anomaly_buzzer()
     else:
        critical_buzzer()
-        
+       
+
+
+# recommend actions based on vibration
+def recommendation(rms):
+    if rms < 0.07:
+        return "No Action Required"
+
+    if rms < 0.12:
+        return "Warning: Avoid shaking the fan or table."
+
+    if rms < 0.25:
+        return "High vibration detected. Inspect equipment and reduce movement."
+
+    return (
+        "Critical Fault: Immediate action required. "
+    )
+
+
+
+start_time = time.time()
+last_upload_time = 0
+RUNTIME_UPLOAD_INTERVAL = 30  # 1 minutes
+MIN_UPLOAD_INTERVAL = 15  # seconds
+last_sent = None
+peak_vibration = 0
+start_time = time.time()
 def main():
+    # 💡 ADD THIS LINE TO FIX THE ERROR
+    global last_sent, last_upload_time, peak_vibration
    
     while True:
+       
+        # Calculate rms and indicate user based on status
         rms = calc_vibr()                
         current_status = status(rms)
         light_protocol(current_status)
-        buzzer_protocol(current_status)  
-        print(f"Vibration: {rms:.3f} g")
-        send_to_aio("Vibration", rms)
+        buzzer_protocol(current_status)
+       
+         # Upload only when needed
+       
+        if (last_sent is None or
+           
+             (abs(rms - last_sent) > 0.02 and time.time() - last_upload_time >= MIN_UPLOAD_INTERVAL) or
+           
+             time.time() - last_upload_time >= RUNTIME_UPLOAD_INTERVAL):
+           
+            # Display info on console
+                   # Track peak vibration since last upload
+            peak_vibration = max(peak_vibration, rms)
+           
+            # Calculate system health score and recommendation based on RMS
+           
+              #  score = health_score(rms)
+            rec = recommendation(rms)
+           
+            # Calculate runtime in hours
+            runtime_hours = round((time.time() - start_time) / 3600, 2)
+           
+
+            print(f"Vibration: {rms:.3f} g")
+           # print(f"Health score: {score:.3f}")
+            print(f"Recommendation: {rec}")
+            print(f"Peak Vibration: {peak_vibration:.3f} g")
+            print(f"Runtime: {runtime_hours} hrs")
+           
+            # Send to AdafruitIO
+           
+            send_to_aio("Vibration", rms)
+            send_to_aio("Peak Vibration", peak_vibration)
+            send_to_aio("Recommendation", rec)
+            send_to_aio("Runtime", runtime_hours)
+           
+           
+            # Now properly modifying global variables
+            last_sent = rms
+            last_upload_time = time.time()
+           
         time.sleep(1)
    
 main()
