@@ -1,718 +1,161 @@
-# Machine Health Monitor
+# Smart Vibration Monitoring System
 
- 
-
-## IoT-Based Vibration Monitoring and Early Fault Detection System
-
- 
-
-### A Grade 12 passion project building an IoT vibration detector with a Pico 2 W and MPU6050 to monitor machine health.
-
-
- 
+A Grade 12 IoT project using a Raspberry Pi Pico 2 W and MPU6050 sensor to monitor vibration levels and provide early maintenance alerts through an Adafruit IO dashboard.
 
 ---
 
- 
+## About the Project
 
-# Project Overview
+This project monitors vibration in real time using an MPU6050 accelerometer connected to a Raspberry Pi Pico 2 W.
 
- 
+When the system starts, it collects vibration data for 30 seconds to determine a normal operating level. Future readings are compared with this level to identify unusual vibrations.
 
-Machines naturally produce vibrations while operating. In some cases, unusual vibration patterns can indicate potential mechanical problems before they become serious.
+The system can:
 
- 
-
-This project uses an **MPU6050 sensor** connected to a **Raspberry Pi Pico 2W** to monitor vibration levels in real time. When vibration exceeds a predefined threshold, the system activates an LED and buzzer alert and sends the sensor data to an online dashboard using MQTT.
-
- 
-
-The project was developed to explore how sensors, embedded systems, wireless communication, and cloud platforms can work together to create a real-time monitoring solution.
-
- 
+- Monitor vibrations in real time
+- Detect unusual vibration activity
+- Display system health status
+- Turn on LED and buzzer alerts when unusual vibrations are detected
+- Track vibration trends
+- Recommend maintenance through an IoT dashboard
 
 ---
 
- 
+## Features
 
-# Features
-
- 
-
-- Real-time vibration monitoring
-
-- Abnormal vibration detection
-
-- LED warning indicator
-
-- Buzzer alert notification
-
-- MQTT-based wireless data transmission
-
-- Adafruit IO dashboard integration
-
-- Remote monitoring over Wi-Fi
-
- 
+- Monitors vibrations in real time
+- Detects unusual vibration activity
+- Shows system health status
+- Tracks vibration levels and peaks
+- Alerts users when vibration becomes excessive
+- Recommends maintenance when needed
+- Displays live data on an Adafruit IO dashboard
+- Supports remote monitoring through Wi-Fi
 
 ---
-
- 
-
-# Motivation
-
- 
-
-I have always been interested in how technology can solve practical problems. While learning about sensors and IoT systems, I discovered that vibration monitoring is commonly used in industrial environments to identify potential equipment issues.
-
- 
-
-I decided to build a simplified version of a vibration monitoring system to better understand how hardware, software, and cloud services interact.
-
- 
-
-This project allowed me to gain experience in:
-
- 
-
-- Electronics
-
-- Programming
-
-- Internet of Things (IoT)
-
-- Data Monitoring
-
-- Troubleshooting
-
-- Problem Solving
-
- 
-
----
-
- 
-
-# Problem Statement
-
- 
-
-Many machines operate for long periods without constant supervision.
-
- 
-
-When abnormal vibrations occur:
-
- 
-
-- Problems may go unnoticed
-
-- Equipment damage can worsen
-
-- Repair costs can increase
-
-- Unexpected downtime may occur
-
- 
-
-The goal of this project is to detect unusual vibration activity and notify users before a potential issue becomes more serious.
-
- 
-
----
-
- 
-
-# System Architecture
-
- 
+## System Architecture
 
 ```text
-
 MPU6050 Sensor
-
-│
-
-▼
-
-Measures Vibration
-
-│
-
-▼
-
-Raspberry Pi Pico 2W
-
-Processes Data
-
-│
-
-▼
-
-Checks Threshold
-
-│
-
-┌────┴────┐
-
-▼ ▼
-
-LED Buzzer
-
-Alert Alert
-
-│
-
-▼
-
-MQTT over Wi-Fi
-
-│
-
-▼
-
+       ↓
+Raspberry Pi Pico 2 W
+       ↓
+Wi-Fi
+       ↓
 Adafruit IO Dashboard
-
-│
-
-▼
-
-Remote Monitoring
-
+       ↓
+System Status
 ```
 
- 
+---
+
+## How It Works
+
+1. The MPU6050 measures vibration levels.
+2. The Pico 2 W performs a 30-second startup calibration.
+3. A baseline vibration level is calculated.
+4. New readings are compared to the baseline.
+5. The system classifies conditions as:
+   - Normal
+   - Warning
+   - Critical
+6. Critical events are counted.
+7. Maintenance is recommended if 3 or more critical events occur within 30 seconds.
+8. Data is sent to Adafruit IO for remote monitoring.
 
 ---
 
- 
-
-# Components Used
-
- 
-
-| Component | Purpose |
-
-|------------|---------|
-
-| Raspberry Pi Pico 2W | Main Controller |
-
-| MPU6050 Sensor | Vibration Measurement |
-
-| LED | Visual Alert |
-
-| Buzzer | Audible Alert |
-
-| Breadboard | Circuit Assembly |
-
-| Jumper Wires | Electrical Connections |
-
-| Wi-Fi | Wireless Communication |
-
-| MQTT | Data Transmission |
-
-| Adafruit IO | Cloud Dashboard |
-
- 
-
----
-
- 
-
-# Wiring Connections
-
- 
-
-## MPU6050 Sensor
-
- 
-
-| MPU6050 Pin | Pico 2W Pin |
-
-|-------------|-------------|
-
-| VCC | 3.3V |
-
-| GND | GND |
-
-| SDA | GP0 |
-
-| SCL | GP1 |
-
- 
-
-## LED
-
- 
-
-| Component | Pico Pin |
-
-|-----------|----------|
-
-| LED (+) | GP15 |
-
-| LED (-) | GND |
-
- 
-
-## Buzzer
-
- 
-
-| Component | Pico Pin |
-
-|-----------|----------|
-
-| Buzzer (+) | GP16 |
-
-| Buzzer (-) | GND |
-
- 
-
----
-
- 
-
-# Hardware Setup
-
- 
-
-## Breadboard Assembly
-
- 
-
-Add a photo of your completed breadboard wiring.
-
- 
-
-```text
-
-/images/breadboard-setup.jpg
-
-```
-
- 
-
-## Circuit Diagram
-
- 
-
-Insert the circuit diagram here.
-
- 
-
-```text
-
-/images/circuit-diagram.png
-
-```
-
- 
-
----
-
- 
-
-# Software and Tools
-
- 
-
-## Programming
-
- 
-
-- MicroPython
-
-- Thonny IDE
-
- 
-
-## Communication
-
- 
-
-- Wi-Fi
-
-- MQTT
-
- 
-
-## Cloud Platform
-
- 
-
+## Components Used
+
+- Raspberry Pi Pico 2 W
+- MPU6050 Accelerometer
+- LED
+- Buzzer
+- Breadboard
+- Jumper Wires
+- Wi-Fi Connection
 - Adafruit IO
 
- 
+---
+
+## Dashboard
+
+The Adafruit IO dashboard displays:
+
+- System Health
+- Maintenance Status
+- System Active Time
+- Vibration Level
+- Peak Vibration
+- Critical Event Count
+---  
+## Project Gallery
+
+### Hardware Setup
+Complete breadboard assembly with the Raspberry Pi Pico 2 W, MPU6050 sensor, LED, and buzzer.
+
+images/Pico2W_HardwareSetup.png
 
 ---
 
- 
+### Dashboard - Normal Operation
+System operating under normal vibration conditions.
 
-# Getting Started
-
- 
-
-## Required Hardware
-
- 
-
-- Raspberry Pi Pico 2W
-
-- MPU6050 Sensor
-
-- LED
-
-- Buzzer
-
-- Breadboard
-
-- Jumper Wires
-
- 
-
-## Setup
-
- 
-
-1. Assemble the circuit according to the wiring diagram.
-
-2. Install MicroPython on the Raspberry Pi Pico 2W.
-
-3. Configure Wi-Fi credentials.
-
-4. Configure Adafruit IO credentials.
-
-5. Upload the program using Thonny IDE.
-
-6. Open the Adafruit IO dashboard.
-
-7. Test the sensor by introducing vibration or movement.
-
- 
+images/dashboard-normal.png
 
 ---
 
- 
+### Dashboard - Maintenance Alert
+Dashboard displaying a maintenance alert after multiple critical vibration events.
 
-# Dashboard Monitoring
-
- 
-
-The Raspberry Pi Pico publishes vibration data to Adafruit IO using MQTT.
-
- 
-
-The dashboard allows users to:
-
- 
-
-- Monitor vibration levels
-
-- View alerts remotely
-
-- Track sensor readings
-
-- Access data online
-
- 
-
-## Dashboard Screenshot
-
- 
-
-Insert dashboard screenshot here.
-
- 
-
-```text
-
-/images/dashboard.png
-
-```
-
- 
+images/dashboard-maintenance.png
 
 ---
 
- 
+### Vibration Monitoring
+Real-time vibration data displayed on the Adafruit IO dashboard.
 
-# Alert Logic
-
- 
-
-The system continuously measures vibration data and compares it against a predefined threshold.
-
- 
-
-When the threshold is exceeded:
-
- 
-
-- LED turns on
-
-- Buzzer activates
-
-- Data is sent to the dashboard
-
- 
-
-Example:
-
- 
-
-```python
-
-if vibration > threshold:
-
-led.on()
-
-```
-
- 
+images/vibration-graph.png
 
 ---
 
- 
+### Peak Vibration
+Highest vibration value detected by the system.
 
-# Sample Results
+images/peak-vibration.png
+---
 
- 
+## Results
 
-| Vibration Level | System Status |
 
-|----------------|--------------|
-
-| 0.15g | Normal |
-
-| 0.45g | Normal |
-
-| 0.90g | Warning |
-
-| 1.20g | Alert |
-
- 
+The project successfully monitored vibration levels, detected unusual activity, and displayed live data on an Adafruit IO dashboard. It also demonstrated how sensors, microcontrollers, and IoT technologies can work together to support real-time monitoring.
 
 ---
 
- 
 
-# Results
+## What I Learned
 
- 
+Building this project helped me improve my skills in programming, electronics, and IoT systems. I learned how to connect sensors to a microcontroller, send data to the cloud, and display real-time information on a dashboard.
 
-The completed system successfully:
+Most importantly, I learned how technology can be used to solve practical problems through data collection and monitoring.
 
- 
-
-- Measured vibration levels in real time
-
-- Triggered visual alerts
-
-- Triggered audible alerts
-
-- Transmitted data wirelessly
-
-- Updated a cloud dashboard
-
-- Demonstrated a functional IoT monitoring solution
-
- 
 
 ---
 
- 
+## Future Improvements
 
-# Challenges
-
- 
-
-## Sensor Calibration
-
- 
-
-The MPU6050 occasionally produced noisy readings. Testing and adjusting threshold values helped improve consistency.
-
- 
-
-## Wi-Fi Connectivity
-
- 
-
-Establishing reliable wireless communication required troubleshooting network and MQTT settings.
-
- 
-
-## MQTT Communication
-
- 
-
-Learning how MQTT publishing and dashboard updates work was an important part of the project.
-
- 
-
-## Circuit Wiring
-
- 
-
-Several early issues were caused by incorrect wiring connections, reinforcing the importance of systematic testing and verification.
-
- 
+- Mobile app integration
+- Support for additional sensors
+- Smarter vibration analysis
 
 ---
 
- 
+## Demo Video
 
-# What I Learned
-
- 
-
-This project helped me develop skills in:
-
- 
-
-- Internet of Things (IoT)
-
-- Sensor Integration
-
-- MicroPython Programming
-
-- MQTT Messaging
-
-- Circuit Design
-
-- Cloud Dashboards
-
-- Hardware Troubleshooting
-
-- Real-Time Monitoring Systems
-
- 
-
-Most importantly, I learned how hardware and software can be combined to solve practical engineering problems.
-
- 
+Add your YouTube or GitHub video link here.
 
 ---
 
- 
+## Disclaimer
 
-# Future Improvements
-
- 
-
-Potential enhancements include:
-
- 
-
-- Email notifications
-
-- SMS alerts
-
-- Mobile application integration
-
-- Multiple vibration sensors
-
-- Historical data logging
-
-- Machine learning-based fault detection
-
-- Enhanced predictive maintenance capabilities
-
- 
-
----
-
- 
-
-# Project Gallery
-
- 
-
-## Breadboard Setup
-
- 
-
-images/breadboard-setup.jpg
-
- 
-
-## Sensor Testing
-
- 
-
-images/sensor-testing.jpg
-
- 
-
-## Dashboard View
-
- 
-
-images/dashboard.png
-
- 
-
-## Alert Condition
-
- 
-
-images/alert-condition.jpg
-
- 
-
----
-
- 
-
-# Demonstration Video
-
- 
-
-The demonstration includes:
-
- 
-
-1. Normal system operation
-
-2. Sensor movement and vibration detection
-
-3. Alert activation
-
-4. Dashboard updates
-
- 
-
-## Video Link
-
- 
-
-[Insert YouTube or GitHub Video Link Here]
-
- 
-
----
-
- 
-
-# Final Reflection
-
- 
-
-This project allowed me to combine electronics, programming, and IoT technologies to solve a practical problem. It provided valuable hands-on experience with sensors, wireless communication, and cloud-based monitoring systems.
-
- 
-
-The most rewarding part of the project was seeing the complete system function successfully from sensor measurement through to cloud dashboard visualization. It demonstrated how concepts learned in the classroom can be applied to real-world engineering challenges.
-
- 
-
----
-
- 
-
-# Disclaimer
-
- 
-
-This project was developed as a Grade 12 Engineering and IoT passion project for educational purposes. The system demonstrates vibration monitoring using a Raspberry Pi Pico 2W and MPU6050 sensor and is intended for learning and experimentation only. It is not designed or certified for industrial safety, industrial monitoring, or production environments.
+This project was developed as a Grade 12 passion project for educational purposes. It demonstrates vibration monitoring, condition monitoring, and maintenance alert concepts using a Raspberry Pi Pico 2 W and MPU6050 sensor.
