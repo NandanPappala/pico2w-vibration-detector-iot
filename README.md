@@ -94,35 +94,35 @@ The Adafruit IO dashboard displays:
 ### Hardware Setup
 Complete breadboard assembly with the Raspberry Pi Pico 2 W, MPU6050 sensor, LED, and buzzer.
 
-images/Pico2W_HardwareSetup.png
+<img width="1390" height="637" alt="image" src="images/Pico2W_HardwareSetup.png" />
 
 ---
 
 ### Dashboard - Normal Operation
 System operating under normal vibration conditions.
 
-images/dashboard-normal.png
+<img width="1390" height="637" alt="image" src="images/Pico2W_dashboard-normal.png" />
 
 ---
 
 ### Dashboard - Maintenance Alert
 Dashboard displaying a maintenance alert after multiple critical vibration events.
 
-images/dashboard-maintenance.png
+<img width="1390" height="637" alt="image" src="images/Pico2W_dashboard-maintenance.png" />
 
 ---
 
 ### Vibration Monitoring
-Real-time vibration data displayed on the Adafruit IO dashboard.
+Real-time vibration data and critical event count displayed on the Adafruit IO dashboard.
 
-images/vibration-graph.png
+<img width="1390" height="637" alt="image" src="images/Pico2W_dashboard_critical-event.png" />
 
 ---
 
 ### Peak Vibration
 Highest vibration value detected by the system.
 
-images/peak-vibration.png
+<img width="1390" height="637" alt="image" src="images/Pico2W_dashboard_peak-vibration.png" />
 ---
 
 ## Results
