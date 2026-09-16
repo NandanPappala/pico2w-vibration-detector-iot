@@ -1,6 +1,5 @@
 # Smart Vibration Monitoring System
-
-A Grade 12 IoT project using a Raspberry Pi Pico 2 W and MPU6050 sensor to monitor vibration levels and provide early maintenance alerts through an Adafruit IO dashboard.
+A Grade 12 passion project by Nandan Pappala that uses a Raspberry Pi Pico 2 W and MPU6050 sensor to monitor vibration levels and provide early maintenance alerts through an Adafruit IO dashboard.
 
 ---
 
@@ -40,7 +39,7 @@ MPU6050 Sensor
        ↓
 Raspberry Pi Pico 2 W
        ↓
-Wi-Fi
+     Wi-Fi
        ↓
 Adafruit IO Dashboard
        ↓
@@ -123,8 +122,8 @@ Real-time vibration data and critical event count displayed on the Adafruit IO d
 Highest vibration value detected by the system.
 
 <img width="1390" height="637" alt="image" src="images/Pico2W_dashboard_peak-vibration.png" />
----
 
+---
 ## Results
 
 
