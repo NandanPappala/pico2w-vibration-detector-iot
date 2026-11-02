@@ -240,9 +240,9 @@ def maintenance_alarm():
 # ==================================================
 def get_machine_status(vibration):
 
-    if vibration <= baseline * 1.15:
+    if vibration <= baseline * 1.25:
         return "Normal"
-    elif vibration <= baseline * 1.30:
+    elif vibration <= baseline * 1.40:
         return "Warning"
 
     return "Critical"
@@ -293,9 +293,9 @@ to determine a normal vibration level.
 
 Future readings are compared against this value.
 
-Normal   : ≤ baseline × 1.15
-Warning  : ≤ baseline × 1.30
-Critical : > baseline × 1.30
+Normal   : ≤ baseline × 1.25
+Warning  : ≤ baseline × 1.40
+Critical : > baseline × 1.40
 """
 def calibrate():
     global baseline
