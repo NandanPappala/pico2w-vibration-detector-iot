@@ -143,15 +143,8 @@ Most importantly, I learned how technology can be used to solve practical proble
 
 ## Future Improvements
 
-- Mobile app integration
 - Support for additional sensors
-- Smarter vibration analysis
 
----
-
-## Demo Video
-
-Add your YouTube or GitHub video link here.
 
 ---
 
